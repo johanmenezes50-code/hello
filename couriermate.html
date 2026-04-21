@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Courier-Mate — Reliable Delivery Partner</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --black: #0a0a0a;
+    --white: #fafaf8;
+    --orange: #f4621f;
+    --orange-light: #ff7a38;
+    --orange-dim: rgba(244,98,31,0.12);
+    --grey: #1c1c1c;
+    --grey-mid: #2e2e2e;
+    --grey-light: #6b6b6b;
+    --border: rgba(255,255,255,0.08);
+    --radius: 14px;
+    --font-head: 'Syne', sans-serif;
+    --font-body: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--black); color: var(--white); font-family: var(--font-body); font-size: 16px; line-height: 1.6; min-height: 100vh; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 18px 48px; background: rgba(10,10,10,0.88); backdrop-filter: blur(18px); border-bottom: 1px solid var(--border); }
+  .logo { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--white); text-decoration: none; display: flex; align-items: center; gap: 10px; cursor: pointer; }
+  .logo-icon { width: 32px; height: 32px; background: var(--orange); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .nav-links { display: flex; align-items: center; gap: 6px; list-style: none; }
+  .nav-links a { text-decoration: none; color: rgba(255,255,255,0.6); font-size: 14px; padding: 8px 14px; border-radius: 8px; transition: all 0.2s; cursor: pointer; }
+  .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.07); }
+  .nav-links a.active { color: var(--white); }
+  .nav-links .btn-nav { background: var(--orange); color: var(--white) !important; padding: 9px 20px; font-weight: 500; border-radius: 9px; }
+  .nav-links .btn-nav:hover { background: var(--orange-light); }
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 6px; background: none; border: none; }
+  .hamburger span { display: block; width: 22px; height: 2px; background: var(--white); border-radius: 2px; }
+
+  .page { display: none; padding-top: 80px; min-height: 100vh; }
+  .page.active { display: block; animation: fadeIn 0.35s ease; }
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 32px; }
+  .badge { display: inline-flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; letter-spacing: 1.2px; text-transform: uppercase; color: var(--orange); background: var(--orange-dim); padding: 6px 16px; border-radius: 50px; margin-bottom: 24px; }
+  .badge::before { content: ''; width: 6px; height: 6px; background: var(--orange); border-radius: 50%; animation: blink 1.5s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+  h1 { font-family: var(--font-head); font-size: clamp(38px, 5.5vw, 68px); font-weight: 800; line-height: 1.05; letter-spacing: -2px; margin-bottom: 20px; }
+  h2 { font-family: var(--font-head); font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -1px; margin-bottom: 16px; }
+  h3 { font-family: var(--font-head); font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 8px; padding: 13px 26px; border-radius: 10px; font-size: 15px; font-weight: 500; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: var(--font-body); border: none; }
+  .btn-primary { background: var(--orange); color: var(--white); }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-1px); }
+  .btn-outline { background: transparent; color: var(--white); border: 1.5px solid rgba(255,255,255,0.2); }
+  .btn-outline:hover { border-color: rgba(255,255,255,0.5); }
+  .btn-white { background: white; color: var(--orange); font-weight: 600; }
+  .btn-white:hover { background: rgba(255,255,255,0.92); }
+
+  .hero { padding: 96px 0 80px; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  .hero-text p { color: rgba(255,255,255,0.6); font-size: 18px; margin-bottom: 14px; }
+  .hero-bonus { display: inline-flex; align-items: center; gap: 8px; background: rgba(244,98,31,0.1); border: 1px solid rgba(244,98,31,0.3); border-radius: 10px; padding: 10px 18px; margin-bottom: 32px; font-size: 15px; }
+  .hero-bonus strong { color: var(--orange); }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+  .hero-visual { display: flex; flex-direction: column; gap: 12px; }
+  .hero-card { background: var(--grey); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: flex; align-items: center; gap: 16px; transition: transform 0.3s; }
+  .hero-card:hover { transform: translateX(-4px); }
+  .hero-card-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--orange-dim); display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .hero-card-title { font-weight: 600; font-size: 15px; margin-bottom: 2px; }
+  .hero-card-sub { font-size: 13px; color: var(--grey-light); }
+
+  .features { padding: 72px 0; border-top: 1px solid var(--border); }
+  .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 20px; }
+  .feature-card { background: var(--grey); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; transition: border-color 0.3s, transform 0.3s; }
+  .feature-card:hover { border-color: rgba(244,98,31,0.4); transform: translateY(-4px); }
+  .feature-num { font-family: var(--font-head); font-size: 48px; font-weight: 800; color: rgba(244,98,31,0.2); line-height: 1; margin-bottom: 16px; }
+
+  .cta-band { margin: 0 0 80px; background: linear-gradient(135deg, var(--orange) 0%, #d44800 100%); border-radius: 20px; padding: 56px 60px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap; }
+  .cta-band h2 { color: white; margin-bottom: 8px; }
+  .cta-band p { color: rgba(255,255,255,0.8); }
+
+  .page-header { padding: 72px 0 56px; border-bottom: 1px solid var(--border); }
+  .page-header p { color: rgba(255,255,255,0.6); font-size: 18px; max-width: 560px; margin-top: 10px; }
+
+  .services-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 20px; padding: 56px 0; }
+  .service-card { background: var(--grey); border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; transition: border-color 0.3s, transform 0.3s; }
+  .service-card:hover { border-color: rgba(244,98,31,0.4); transform: translateY(-4px); }
+  .service-icon { font-size: 30px; margin-bottom: 14px; }
+  .service-card ul { list-style: none; margin-top: 10px; }
+  .service-card ul li { padding: 6px 0; color: rgba(255,255,255,0.7); font-size: 14px; border-bottom: 1px solid rgba(255,255,255,0.05); display: flex; align-items: center; gap: 8px; }
+  .service-card ul li::before { content: '→'; color: var(--orange); font-size: 12px; flex-shrink:0; }
+  .service-card ul li:last-child { border-bottom: none; }
+
+  .about-sections { padding: 56px 0; display: flex; flex-direction: column; gap: 56px; }
+  .about-row { display: grid; grid-template-columns: 80px 1fr; gap: 28px; align-items: start; }
+  .about-num { font-family: var(--font-head); font-size: 56px; font-weight: 800; color: rgba(244,98,31,0.2); line-height: 1; }
+  .values-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; padding: 56px 0; border-top: 1px solid var(--border); }
+  .value-card { background: var(--grey); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px 20px; text-align: center; }
+  .value-icon { font-size: 28px; margin-bottom: 12px; }
+
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 56px 0; }
+  .contact-card { background: var(--grey); border: 1px solid var(--border); border-radius: var(--radius); padding: 40px; display: flex; align-items: center; gap: 20px; transition: border-color 0.3s; text-decoration: none; }
+  .contact-card:hover { border-color: rgba(244,98,31,0.4); }
+  .contact-icon { width: 56px; height: 56px; background: var(--orange-dim); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+  .contact-label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--grey-light); margin-bottom: 4px; }
+  .contact-value { color: var(--white); font-size: 16px; font-weight: 500; }
+
+  .careers-intro { padding: 56px 0 36px; }
+  .role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px; }
+  .role-card { background: var(--grey); border: 2px solid var(--border); border-radius: var(--radius); padding: 28px; cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-start; gap: 16px; }
+  .role-card:hover, .role-card.selected { border-color: var(--orange); background: rgba(244,98,31,0.08); }
+  .role-card-icon { font-size: 28px; flex-shrink: 0; }
+
+  .app-form { background: var(--grey); border: 1px solid var(--border); border-radius: 20px; padding: 44px; margin-bottom: 80px; }
+  .steps { display: flex; align-items: flex-start; margin-bottom: 40px; }
+  .step { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; position: relative; }
+  .step::after { content: ''; position: absolute; top: 16px; left: 50%; right: -50%; height: 2px; background: var(--border); z-index: 0; }
+  .step:last-child::after { display: none; }
+  .step-dot { width: 32px; height: 32px; border-radius: 50%; background: var(--grey-mid); border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; z-index: 1; position: relative; transition: all 0.3s; }
+  .step.active .step-dot { background: var(--orange); border-color: var(--orange); color: white; }
+  .step.done .step-dot { background: #22c55e; border-color: #22c55e; color: white; }
+  .step.done::after { background: #22c55e; }
+  .step-label { font-size: 11px; color: var(--grey-light); text-align: center; white-space: nowrap; }
+  .step.active .step-label { color: var(--orange); }
+
+  .form-section { display: none; }
+  .form-section.active { display: block; animation: fadeIn 0.3s ease; }
+  .form-group { margin-bottom: 18px; }
+  .form-group > label { display: block; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.7); margin-bottom: 7px; }
+  .form-group > label span { color: var(--orange); }
+  .form-input { width: 100%; background: var(--black); border: 1.5px solid rgba(255,255,255,0.1); color: var(--white); padding: 11px 15px; border-radius: 10px; font-family: var(--font-body); font-size: 15px; transition: border-color 0.2s; outline: none; -webkit-appearance: none; appearance: none; }
+  .form-input:focus { border-color: var(--orange); }
+  .form-input.error { border-color: #ef4444; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .radio-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .radio-opt { display: flex; align-items: center; gap: 8px; padding: 10px 16px; background: var(--black); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+  .radio-opt.sel { border-color: var(--orange); background: var(--orange-dim); }
+  .checkbox-group { display: flex; flex-direction: column; gap: 8px; }
+  .chk-opt { display: flex; align-items: center; gap: 10px; padding: 11px 15px; background: var(--black); border: 1.5px solid rgba(255,255,255,0.1); border-radius: 10px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+  .chk-opt.sel { border-color: var(--orange); background: var(--orange-dim); }
+  .chk-opt input, .radio-opt input { accent-color: var(--orange); }
+
+  .upload-area { border: 2px dashed rgba(255,255,255,0.15); border-radius: 12px; padding: 40px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+  .upload-area:hover { border-color: var(--orange); background: var(--orange-dim); }
+  .upload-area input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { font-size: 30px; margin-bottom: 8px; }
+  .upload-sub { font-size: 12px; color: var(--grey-light); margin-top: 6px; }
+  .uploaded-file { display: flex; align-items: center; gap: 10px; margin-top: 10px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); border-radius: 8px; padding: 10px 14px; font-size: 13px; }
+
+  .review-section { margin-bottom: 20px; background: rgba(255,255,255,0.03); border-radius: 10px; padding: 20px; }
+  .review-row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 14px; border-bottom: 1px solid var(--border); }
+  .review-row:last-child { border-bottom: none; }
+  .review-label { color: var(--grey-light); }
+
+  .consent-row { display: flex; align-items: center; gap: 12px; padding: 14px 0; cursor: pointer; font-size: 14px; }
+  .consent-row input { accent-color: var(--orange); width: 18px; height: 18px; flex-shrink: 0; }
+
+  .form-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+  .err { color: #ef4444; font-size: 12px; margin-top: 4px; display: none; }
+  .err.show { display: block; }
+
+  .success-state { text-align: center; padding: 60px 20px; }
+  .success-icon { font-size: 64px; margin-bottom: 20px; }
+  .success-state h2 { color: #22c55e; margin-bottom: 10px; }
+  .success-state p { color: rgba(255,255,255,0.6); }
+
+  footer { border-top: 1px solid var(--border); padding: 48px 0 32px; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: start; gap: 40px; flex-wrap: wrap; margin-bottom: 28px; }
+  .footer-logo { font-family: var(--font-head); font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .footer-tagline { color: var(--grey-light); font-size: 14px; }
+  .footer-links { display: flex; gap: 24px; flex-wrap: wrap; }
+  .footer-links a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 14px; transition: color 0.2s; cursor: pointer; }
+  .footer-links a:hover { color: var(--white); }
+  .footer-copy { color: var(--grey-light); font-size: 13px; text-align: center; padding-top: 24px; border-top: 1px solid var(--border); }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; right: 0; background: var(--black); border-bottom: 1px solid var(--border); padding: 12px 20px 20px; gap: 4px; }
+    .nav-links.open { display: flex; }
+    .hamburger { display: flex; }
+    .hero, .features-grid, .services-grid, .values-grid, .contact-grid, .role-cards, .form-grid { grid-template-columns: 1fr; }
+    .hero { padding: 60px 0 48px; gap: 36px; }
+    .cta-band { padding: 36px 24px; }
+    .app-form { padding: 24px 18px; }
+    h1 { letter-spacing: -1px; }
+    .about-row { grid-template-columns: 1fr; gap: 8px; }
+    .about-num { font-size: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo" onclick="showPage('home')">
+    <div class="logo-icon">📦</div>
+    Courier-Mate
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a onclick="showPage('home')" data-page="home">Home</a></li>
+    <li><a onclick="showPage('services')" data-page="services">Services</a></li>
+    <li><a onclick="showPage('about')" data-page="about">About</a></li>
+    <li><a onclick="showPage('contact')" data-page="contact">Contact</a></li>
+    <li><a onclick="showPage('careers')" data-page="careers" class="btn-nav">Apply Now</a></li>
+  </ul>
+  <button class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="page-home">
+  <div class="container">
+    <div class="hero">
+      <div class="hero-text">
+        <div class="badge">We're Hiring</div>
+        <h1>Delivering excellence, one parcel at a time.</h1>
+        <p>Courier Mate is Australia's growing courier service. We connect reliable drivers and helpers with flexible delivery work across the country.</p>
+        <div class="hero-bonus">🎉 Join now and receive up to <strong>&nbsp;$3,000 retention bonus</strong></div>
+        <div class="hero-ctas">
+          <button class="btn btn-primary" onclick="showPage('careers')">Join Our Team →</button>
+          <button class="btn btn-outline" onclick="showPage('about')">Learn More</button>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="hero-card"><div class="hero-card-icon">🚗</div><div><div class="hero-card-title">Drivers Needed</div><div class="hero-card-sub">Flexible hours, great pay</div></div></div>
+        <div class="hero-card"><div class="hero-card-icon">🤝</div><div><div class="hero-card-title">Helpers Welcome</div><div class="hero-card-sub">No experience needed</div></div></div>
+        <div class="hero-card"><div class="hero-card-icon">📅</div><div><div class="hero-card-title">3–7 Days / Week</div><div class="hero-card-sub">You choose your schedule</div></div></div>
+      </div>
+    </div>
+    <div class="features">
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-num">01</div><h3>Flexible Hours</h3><p style="color:rgba(255,255,255,0.6);font-size:15px;margin-top:6px;">Work 3 to 7 days a week. Part-time or full-time — it's up to you.</p></div>
+        <div class="feature-card"><div class="feature-num">02</div><h3>Quick Onboarding</h3><p style="color:rgba(255,255,255,0.6);font-size:15px;margin-top:6px;">Simple application process. Apply today and start earning soon.</p></div>
+        <div class="feature-card"><div class="feature-num">03</div><h3>Growing Team</h3><p style="color:rgba(255,255,255,0.6);font-size:15px;margin-top:6px;">Join a supportive, expanding network of drivers and helpers across Australia.</p></div>
+      </div>
+    </div>
+    <div class="cta-band">
+      <div><h2>Ready to hit the road?</h2><p>We're looking for reliable drivers and helpers. Flexible schedules, competitive pay, and a great team.</p></div>
+      <button class="btn btn-white" onclick="showPage('careers')">Apply Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="page" id="page-services">
+  <div class="container">
+    <div class="page-header">
+      <div class="badge">What We Do</div>
+      <h1>Our Courier Services</h1>
+      <p>From same-day express to specialised secure transport, we deliver across every industry with reliability and care.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon">📦</div><h3>General Delivery</h3><ul><li>Same-day courier</li><li>Express / urgent deliveries</li><li>Multi-drop deliveries</li><li>Scheduled &amp; route-based runs</li></ul></div>
+      <div class="service-card"><div class="service-icon">🛋️</div><h3>Furniture &amp; Large Items</h3><ul><li>Furniture delivery</li><li>Mattress delivery</li><li>White goods (fridges, washers, dryers)</li><li>Flat-pack delivery &amp; assembly support</li><li>2-person delivery teams</li></ul></div>
+      <div class="service-card"><div class="service-icon">🏢</div><h3>Business &amp; Commercial</h3><ul><li>B2B deliveries</li><li>Warehouse-to-store distribution</li><li>Office relocations (small moves)</li><li>Trade &amp; construction material delivery</li><li>Retail stock replenishment</li></ul></div>
+      <div class="service-card"><div class="service-icon">🏥</div><h3>Medical &amp; Healthcare</h3><ul><li>Medical equipment delivery</li><li>Pathology / sample transport</li><li>Pharmacy deliveries</li><li>Time-sensitive healthcare logistics</li></ul></div>
+      <div class="service-card"><div class="service-icon">🔒</div><h3>Specialised &amp; Secure</h3><ul><li>Legal documents</li><li>High-value items</li><li>Fragile goods handling</li><li>Confidential / secure transport</li></ul></div>
+      <div class="service-card"><div class="service-icon">🌡️</div><h3>Food &amp; Temperature-Controlled</h3><ul><li>Catering &amp; bulk food delivery</li><li>Grocery delivery</li><li>Refrigerated / cold-chain transport</li></ul></div>
+      <div class="service-card" style="grid-column:1/-1"><div class="service-icon">⚡</div><h3>On-Demand &amp; Flexible Services</h3><ul style="display:flex;gap:0 40px;flex-wrap:wrap"><li>On-demand courier (as needed)</li><li>After-hours &amp; weekend delivery</li><li>Custom delivery solutions</li></ul></div>
+    </div>
+    <div class="cta-band">
+      <div><h2>Want to join our delivery team?</h2><p>Always looking for reliable drivers and helpers. Flexible schedules and competitive pay.</p></div>
+      <button class="btn btn-white" onclick="showPage('careers')">Apply Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="page" id="page-about">
+  <div class="container">
+    <div class="page-header">
+      <div class="badge">About Us</div>
+      <h1>Built on reliability</h1>
+      <p>Courier Mate was founded with a simple mission: provide dependable, flexible courier services across Australia while creating great job opportunities.</p>
+    </div>
+    <div class="about-sections">
+      <div class="about-row"><div class="about-num">01</div><div><h2>Who We Are</h2><p style="color:rgba(255,255,255,0.65);margin-bottom:10px;">Courier Mate is a courier service company connecting businesses and individuals with reliable delivery solutions. We operate across Australia, providing fast and efficient parcel delivery services.</p><p style="color:rgba(255,255,255,0.65);">Our team is made up of dedicated drivers and helpers who take pride in getting every delivery right.</p></div></div>
+      <div class="about-row"><div class="about-num">02</div><div><h2>What We Do</h2><p style="color:rgba(255,255,255,0.65);margin-bottom:10px;">We handle deliveries of all sizes — from small parcels to larger freight. Our flexible workforce model means we can scale to meet demand while giving our team members the work-life balance they want.</p><p style="color:rgba(255,255,255,0.65);">Whether it's a same-day delivery or a scheduled run, Courier Mate gets it there.</p></div></div>
+      <div class="about-row"><div class="about-num">03</div><div><h2>Why Work With Us</h2><p style="color:rgba(255,255,255,0.65);">We believe in treating our team right. That means flexible scheduling (3–7 days per week), fair pay, and a straightforward onboarding process. No red tape, no runaround. We're growing fast and always looking for reliable people to join the team.</p></div></div>
+    </div>
+    <div class="values-grid">
+      <div class="value-card"><div class="value-icon">⏱️</div><h3>Reliability</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;">We show up, on time, every time.</p></div>
+      <div class="value-card"><div class="value-icon">🤝</div><h3>Integrity</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;">Honest, transparent, and fair in everything we do.</p></div>
+      <div class="value-card"><div class="value-icon">👥</div><h3>Teamwork</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;">Every driver, every helper — everyone matters.</p></div>
+      <div class="value-card"><div class="value-icon">⚡</div><h3>Efficiency</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;">Smart routes, quick deliveries, no wasted time.</p></div>
+    </div>
+    <div class="cta-band">
+      <div><h2>Want to be part of the team?</h2><p>We're actively hiring drivers and helpers. Flexible hours, no experience needed for helper roles.</p></div>
+      <button class="btn btn-white" onclick="showPage('careers')">Apply Now →</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div class="page" id="page-contact">
+  <div class="container">
+    <div class="page-header">
+      <div class="badge">Get in Touch</div>
+      <h1>Contact Us</h1>
+      <p>Have a question or want to learn more? Reach out to us through any of the channels below.</p>
+    </div>
+    <div class="contact-grid">
+      <a class="contact-card" href="mailto:info@couriermate.work">
+        <div class="contact-icon">✉️</div>
+        <div><div class="contact-label">Email</div><div class="contact-value">info@couriermate.work</div></div>
+      </a>
+      <a class="contact-card" href="https://facebook.com/couriermate" target="_blank">
+        <div class="contact-icon">📘</div>
+        <div><div class="contact-label">Facebook</div><div class="contact-value">facebook.com/couriermate</div></div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CAREERS -->
+<div class="page" id="page-careers">
+  <div class="container">
+    <div class="careers-intro">
+      <div class="badge">Now Hiring</div>
+      <h1>Join Courier Mate</h1>
+      <p style="color:rgba(255,255,255,0.6);font-size:18px;margin-bottom:28px;">We're looking for reliable drivers and helpers. Flexible work, 3–7 days per week. Part-time and full-time positions available.</p>
+      <div class="role-cards">
+        <div class="role-card" id="roleDriver" onclick="selectRole('Driver')"><div class="role-card-icon">🚗</div><div><h3>Driver</h3><p style="font-size:14px;color:rgba(255,255,255,0.6);">Deliver parcels across your local area. Must have a valid driver's licence.</p></div></div>
+        <div class="role-card" id="roleHelper" onclick="selectRole('Helper')"><div class="role-card-icon">🤲</div><div><h3>Helper</h3><p style="font-size:14px;color:rgba(255,255,255,0.6);">Assist with loading and deliveries. No experience required — just be reliable.</p></div></div>
+      </div>
+    </div>
+
+    <div class="app-form" id="appForm" style="display:none;">
+      <h2 style="margin-bottom:6px;">Application Form</h2>
+      <p style="color:rgba(255,255,255,0.5);font-size:14px;margin-bottom:32px;">Complete all steps below to submit your application.</p>
+      <div class="steps">
+        <div class="step active" id="sd1"><div class="step-dot">1</div><div class="step-label">Role</div></div>
+        <div class="step" id="sd2"><div class="step-dot">2</div><div class="step-label">Personal</div></div>
+        <div class="step" id="sd3"><div class="step-dot">3</div><div class="step-label">Work Info</div></div>
+        <div class="step" id="sd4"><div class="step-dot">4</div><div class="step-label">Documents</div></div>
+        <div class="step" id="sd5"><div class="step-dot">5</div><div class="step-label">Submit</div></div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="form-section active" id="fs1">
+        <h3 style="margin-bottom:18px;">What position are you applying for?</h3>
+        <div class="role-cards">
+          <div class="role-card" id="fs1d" onclick="setFormRole('Driver')"><div class="role-card-icon">🚗</div><div><h3>Driver</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);">Deliver parcels in your area</p></div></div>
+          <div class="role-card" id="fs1h" onclick="setFormRole('Helper')"><div class="role-card-icon">🤲</div><div><h3>Helper</h3><p style="font-size:13px;color:rgba(255,255,255,0.6);">Assist with deliveries</p></div></div>
+        </div>
+        <div id="e0" class="err">Please select a position</div>
+        <div class="form-nav"><div></div><button class="btn btn-primary" onclick="go(1)">Next Step →</button></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="form-section" id="fs2">
+        <h3 style="margin-bottom:18px;">Your details</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Full Name <span>*</span></label><input class="form-input" id="fn" type="text" placeholder="John Smith"/><div class="err" id="e1">Please enter your full name</div></div>
+          <div class="form-group"><label>Email Address <span>*</span></label><input class="form-input" id="fe" type="email" placeholder="john@example.com"/><div class="err" id="e2">Please enter a valid email address</div></div>
+          <div class="form-group"><label>Phone Number <span>*</span></label><input class="form-input" id="fp" type="tel" placeholder="0400 000 000"/><div class="err" id="e3">Please enter your phone number</div></div>
+          <div class="form-group"><label>Current Location <span>*</span></label><input class="form-input" id="fl" type="text" placeholder="Sydney, NSW"/><div class="err" id="e4">Please enter your suburb or city</div></div>
+        </div>
+        <div class="form-nav"><button class="btn btn-outline" onclick="goTo(2)">← Back</button><button class="btn btn-primary" onclick="go(2)">Next Step →</button></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="form-section" id="fs3">
+        <h3 style="margin-bottom:18px;">Work preferences</h3>
+        <div class="form-grid">
+          <div class="form-group"><label>Availability (days per week) <span>*</span></label><select class="form-input" id="fa"><option value="">Select your availability</option><option>3 days per week</option><option>4 days per week</option><option>5 days per week</option><option>6 days per week</option><option>7 days per week</option></select><div class="err" id="e5">Please select your availability</div></div>
+          <div class="form-group"><label>Employment Type <span>*</span></label><select class="form-input" id="fet"><option value="">Select preference</option><option>Part-time</option><option>Full-time</option><option>Either (no preference)</option></select><div class="err" id="e6">Please select employment type</div></div>
+        </div>
+        <div class="form-group">
+          <label>Right to work in Australia? <span>*</span></label>
+          <div class="radio-group" id="rtwk-grp">
+            <div class="radio-opt" onclick="radioSel('rtwk','Yes',this)"><input type="radio" name="rtwk" value="Yes" style="display:none"/> Yes</div>
+            <div class="radio-opt" onclick="radioSel('rtwk','No',this)"><input type="radio" name="rtwk" value="No" style="display:none"/> No</div>
+          </div>
+          <div class="err" id="e7">Please answer this question</div>
+        </div>
+        <div class="form-group">
+          <label>Do you have a driver's licence? <span>*</span></label>
+          <div class="radio-group" id="lic-grp">
+            <div class="radio-opt" onclick="radioSel('dlicence','Yes',this);document.getElementById('lic-types').style.display='block'"><input type="radio" name="dlicence" value="Yes" style="display:none"/> Yes</div>
+            <div class="radio-opt" onclick="radioSel('dlicence','No',this);document.getElementById('lic-types').style.display='none'"><input type="radio" name="dlicence" value="No" style="display:none"/> No</div>
+          </div>
+          <div class="err" id="e8">Please answer this question</div>
+        </div>
+        <div class="form-group" id="lic-types" style="display:none;">
+          <label>What licences do you have?</label>
+          <div class="checkbox-group">
+            <div class="chk-opt" onclick="toggleChk(this,'Car')"><input type="checkbox" value="Car" style="display:none"/> Car licence</div>
+            <div class="chk-opt" onclick="toggleChk(this,'Motorcycle')"><input type="checkbox" value="Motorcycle" style="display:none"/> Motorcycle licence</div>
+            <div class="chk-opt" onclick="toggleChk(this,'Truck')"><input type="checkbox" value="Truck" style="display:none"/> Truck licence (MR/HR)</div>
+            <div class="chk-opt" onclick="toggleChk(this,'None')"><input type="checkbox" value="None" style="display:none"/> No licence</div>
+          </div>
+        </div>
+        <div class="form-group"><label>Earliest start date <span>*</span></label><input class="form-input" id="fsd" type="date"/><div class="err" id="e9">Please select a start date</div></div>
+        <div class="form-nav"><button class="btn btn-outline" onclick="goTo(2)">← Back</button><button class="btn btn-primary" onclick="go(3)">Next Step →</button></div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="form-section" id="fs4">
+        <h3 style="margin-bottom:6px;">Upload your documents</h3>
+        <p style="color:rgba(255,255,255,0.5);font-size:13px;margin-bottom:22px;">Accepted formats: PDF, DOC, DOCX, JPG, PNG (max 5MB). You can also take a photo directly from your camera on mobile.</p>
+        <div class="form-group">
+          <label>CV / Resume <span>*</span></label>
+          <div class="upload-area" id="cv-area">
+            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange="handleFile(this)"/>
+            <div class="upload-icon">📄</div>
+            <div>Upload file or take a photo</div>
+            <div class="upload-sub">PDF, DOC, DOCX, JPG, PNG — max 5MB</div>
+          </div>
+          <div id="cv-done" style="display:none;" class="uploaded-file">✅ <span id="cv-name"></span></div>
+          <div class="err" id="e10">Please upload your CV</div>
+        </div>
+        <div class="form-nav"><button class="btn btn-outline" onclick="goTo(3)">← Back</button><button class="btn btn-primary" onclick="go(4)">Next Step →</button></div>
+      </div>
+
+      <!-- Step 5 -->
+      <div class="form-section" id="fs5">
+        <h3 style="margin-bottom:18px;">Review &amp; Submit</h3>
+        <div class="review-section" id="review-data"></div>
+        <div class="consent-row" onclick="document.getElementById('consent').click()">
+          <input type="checkbox" id="consent"/>
+          I confirm that the information provided is accurate and complete.
+        </div>
+        <div class="err" id="e11">You must agree to proceed</div>
+        <div class="form-nav"><button class="btn btn-outline" onclick="goTo(4)">← Back</button><button class="btn btn-primary" onclick="submitApp()" style="padding:14px 36px;">Submit Application</button></div>
+      </div>
+
+      <!-- Success -->
+      <div class="form-section" id="fs-ok">
+        <div class="success-state">
+          <div class="success-icon">🎉</div>
+          <h2>Application Submitted!</h2>
+          <p style="font-size:16px;margin-top:8px;">Thanks for applying! We'll be in touch within 2 business days.<br/>Check your email for a confirmation and next steps.</p>
+          <button class="btn btn-primary" style="margin-top:28px;" onclick="resetApp()">Submit Another Application</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div><div class="footer-logo">📦 Courier-Mate</div><div class="footer-tagline">Reliable delivery, every time.</div></div>
+      <div class="footer-links">
+        <a onclick="showPage('home')">Home</a>
+        <a onclick="showPage('services')">Services</a>
+        <a onclick="showPage('about')">About</a>
+        <a onclick="showPage('contact')">Contact</a>
+        <a onclick="showPage('careers')">Careers</a>
+      </div>
+    </div>
+    <div class="footer-copy">© 2026 Courier Mate. All rights reserved.</div>
+  </div>
+</footer>
+
+<script>
+var selRole = '', cvFile = null, step = 1;
+var radios = {};
+
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  document.querySelectorAll('[data-page]').forEach(a => a.classList.toggle('active', a.dataset.page === p));
+  window.scrollTo({top:0,behavior:'smooth'});
+  document.getElementById('navLinks').classList.remove('open');
+}
+
+function selectRole(r) {
+  selRole = r;
+  document.getElementById('roleDriver').classList.toggle('selected', r==='Driver');
+  document.getElementById('roleHelper').classList.toggle('selected', r==='Helper');
+  setFormRole(r);
+  var f = document.getElementById('appForm');
+  f.style.display = 'block';
+  setTimeout(function(){ f.scrollIntoView({behavior:'smooth',block:'start'}); }, 60);
+}
+
+function setFormRole(r) {
+  selRole = r;
+  document.getElementById('fs1d').classList.toggle('selected', r==='Driver');
+  document.getElementById('fs1h').classList.toggle('selected', r==='Helper');
+  document.getElementById('e0').classList.remove('show');
+}
+
+function radioSel(name, val, el) {
+  radios[name] = val;
+  el.parentElement.querySelectorAll('.radio-opt').forEach(function(x){ x.classList.remove('sel'); });
+  el.classList.add('sel');
+}
+
+function toggleChk(el, val) {
+  el.classList.toggle('sel');
+}
+
+function goTo(s) {
+  document.querySelectorAll('.form-section').forEach(x => x.classList.remove('active'));
+  document.getElementById('fs'+(s==='ok'?'-ok':s)).classList.add('active');
+  for(var i=1;i<=5;i++){
+    var d=document.getElementById('sd'+i);
+    d.classList.remove('active','done');
+    if(typeof s === 'number') {
+      if(i<s) d.classList.add('done');
+      else if(i===s) d.classList.add('active');
+    }
+  }
+  step = typeof s === 'number' ? s : step;
+  document.getElementById('appForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function go(from) {
+  var ok = true;
+  if(from===1){
+    if(!selRole){ document.getElementById('e0').classList.add('show'); ok=false; }
+  }
+  if(from===2){
+    var checks=[
+      {id:'fn',e:'e1',t:function(v){return v.trim().length>1;}},
+      {id:'fe',e:'e2',t:function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);}},
+      {id:'fp',e:'e3',t:function(v){return v.trim().length>6;}},
+      {id:'fl',e:'e4',t:function(v){return v.trim().length>1;}}
+    ];
+    checks.forEach(function(c){
+      var el=document.getElementById(c.id), good=c.t(el.value);
+      el.classList.toggle('error',!good);
+      document.getElementById(c.e).classList.toggle('show',!good);
+      if(!good) ok=false;
+    });
+  }
+  if(from===3){
+    if(!document.getElementById('fa').value){document.getElementById('e5').classList.add('show');ok=false;}else document.getElementById('e5').classList.remove('show');
+    if(!document.getElementById('fet').value){document.getElementById('e6').classList.add('show');ok=false;}else document.getElementById('e6').classList.remove('show');
+    if(!radios['rtwk']){document.getElementById('e7').classList.add('show');ok=false;}else document.getElementById('e7').classList.remove('show');
+    if(!radios['dlicence']){document.getElementById('e8').classList.add('show');ok=false;}else document.getElementById('e8').classList.remove('show');
+    if(!document.getElementById('fsd').value){document.getElementById('e9').classList.add('show');ok=false;}else document.getElementById('e9').classList.remove('show');
+  }
+  if(from===4){
+    if(!cvFile){document.getElementById('e10').classList.add('show');ok=false;}else document.getElementById('e10').classList.remove('show');
+  }
+  if(!ok) return;
+  if(from===4) buildReview();
+  goTo(from+1);
+}
+
+function handleFile(inp) {
+  var f = inp.files[0]; if(!f) return;
+  cvFile = f;
+  document.getElementById('cv-done').style.display='flex';
+  document.getElementById('cv-name').textContent=f.name;
+  document.getElementById('e10').classList.remove('show');
+}
+
+function buildReview() {
+  var lics = [].slice.call(document.querySelectorAll('#lic-types .chk-opt.sel')).map(function(x){return x.querySelector('input').value;}).join(', ')||'N/A';
+  var rows=[
+    ['Position', selRole||'—'],
+    ['Name', document.getElementById('fn').value||'—'],
+    ['Email', document.getElementById('fe').value||'—'],
+    ['Phone', document.getElementById('fp').value||'—'],
+    ['Location', document.getElementById('fl').value||'—'],
+    ['Availability', document.getElementById('fa').value||'—'],
+    ['Employment Type', document.getElementById('fet').value||'—'],
+    ['Right to Work', radios['rtwk']||'—'],
+    ["Driver's Licence", radios['dlicence']?(radios['dlicence']==='Yes'?'Yes ('+lics+')':'No'):'—'],
+    ['Start Date', document.getElementById('fsd').value||'—'],
+    ['CV Uploaded', cvFile?cvFile.name:'—']
+  ];
+  document.getElementById('review-data').innerHTML = rows.map(function(r){
+    return '<div class="review-row"><span class="review-label">'+r[0]+'</span><span>'+r[1]+'</span></div>';
+  }).join('');
+}
+
+function submitApp() {
+  var c = document.getElementById('consent');
+  if(!c.checked){document.getElementById('e11').classList.add('show');return;}
+  document.getElementById('e11').classList.remove('show');
+  document.querySelectorAll('.form-section').forEach(x=>x.classList.remove('active'));
+  document.getElementById('fs-ok').classList.add('active');
+  document.querySelectorAll('.step').forEach(function(s){s.classList.remove('active');s.classList.add('done');});
+}
+
+function resetApp() {
+  selRole=''; cvFile=null; step=1; radios={};
+  document.getElementById('appForm').style.display='none';
+  document.querySelectorAll('#appForm input[type=text],#appForm input[type=email],#appForm input[type=tel],#appForm select').forEach(function(el){el.value='';});
+  document.getElementById('consent').checked=false;
+  document.getElementById('cv-done').style.display='none';
+  document.getElementById('lic-types').style.display='none';
+  document.getElementById('roleDriver').classList.remove('selected');
+  document.getElementById('roleHelper').classList.remove('selected');
+  document.querySelectorAll('.radio-opt,.chk-opt').forEach(function(x){x.classList.remove('sel');});
+  goTo(1);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('fsd').min = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>
